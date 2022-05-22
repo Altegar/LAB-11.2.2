@@ -35,7 +35,6 @@ struct Student
 void CreateBIN(Student* p, const int N, char* fname);
 void PrintBIN(Student* p, const int N, char* fname);
 int OcinkaBIN(Student* p, const int N, char* fname);
-void SortBIN(Student* p, const int N, char* fname);
 
 int main()
 {
@@ -59,7 +58,6 @@ int main()
 		cout << " [1] - введення даних з клавіатури" << endl;
 		cout << " [2] - вивід даних на екран" << endl;
 		cout << " [3] - вивід кількості оцінок «добре»" << endl;
-		cout << " [4] - сортування" << endl;
 		cout << " [0] - вихід та завершення роботи програми" << endl << endl;
 		cout << "Введіть значення: "; cin >> menuItem;
 		cout << endl << endl << endl;
@@ -78,10 +76,6 @@ int main()
 			cout << "---------------------------------------------" << endl;
 			cout << "| Кількість оцінок «добре»: " << setw(15) << count << " |" << endl;
 			cout << "=============================================" << endl;
-			break;
-
-		case 4:
-			SortBIN(p, N, fname);
 			break;
 		case 0:
 			break;
@@ -243,50 +237,4 @@ int OcinkaBIN(Student* p, const int N, char* fname)
 	}
 
 	return count;
-}
-
-void fWrite(fstream& f, const int i, const char x)
-{
-	f.seekp(i * (long)sizeof(char)); // встановили вказівник
-	f.write((char*)&x, sizeof(char)); // записали значення
-}
-
-char fRead(fstream& f, const int i)
-{
-	char x;
-	f.seekg(i * (long)sizeof(char)); // встановили вказівник
-	f.read((char*)&x, sizeof(char)); // прочитали значення
-
-	return x;
-}
-
-void fChange(fstream& f, const int i, const int j)
-{
-	char x = fRead(f, i);
-	char y = fRead(f, j);
-	fWrite(f, i, y);
-	fWrite(f, j, x);
-}
-
-void SortBIN(Student* p, const int N, char* fname)		// сортування файлу – за допомогою прямого доступу до файлу
-{
-	fstream f(fname, ios::binary | ios::in);			// обов'язково слід вказати режими
-														// ios::binary | ios::in
-														// - бінарний файл, для якого
-														// одночасно доступна операція
-														// - зчитування
-	f.seekg(0, ios::end);
-	int size = f.tellg();
-
-	f.seekg(0, ios::beg);
-
-	for (int i0 = 1; i0 < size; i0++)
-		for (int i1 = 0; i1 < size - i0; i1++)
-		{
-			char a = fRead(f, i1);
-			char b = fRead(f, i1 + 1);
-			if (a > b)
-				fChange(f, i1, i1 + 1);
-		}
-	f.seekp(0, ios::end);
 }
